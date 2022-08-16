@@ -6,20 +6,20 @@ int GAS_API_start_record(void* handle){
     handler* my_handler=(handler*)(handle);
     stage * temp= my_handler->stages;
     my_handler->status|=RECORD_ACTIVE;
-
+    
     while(temp){
         pthread_create(&(temp->thread),NULL,main_satge,temp);
         temp=temp->next_satge;
     }
     return 0;
-
+    
 }
 int GAS_API_stop_record(void* handle){
-
+    
     printf ("====stop_record====\n\r");
     handler* my_handler=(handler*)(handle);
     my_handler->status=my_handler->status&(~RECORD_ACTIVE);
-    //we need it to the status controller in the app!
+    // need it to the status controller in the app!
     my_handler->status|=STOP_ACTIVE;
     stage * temp= my_handler->stages;
     while(temp){
@@ -35,27 +35,27 @@ int GAS_API_do_snapshot(void* handle){
     handler* my_handler=(handler*)(handle);
     my_handler->status|=SNAPSHOT_ACTIVE;
     my_handler->snapshot_bit=true;
-
+    
     if((my_handler->status & RECORD_ACTIVE))
     {
         return 1;
     }
     stage * temp= my_handler->stages;
-
+    
     for(int i=0;i<2;i++)
     {
         pthread_create(&temp->thread,NULL,main_satge,temp);
         temp=temp->next_satge;
     }
-
+    
     temp= my_handler->stages;
     for(int i=0;i<2;i++){
         pthread_join(temp->thread,NULL);
         temp=temp->next_satge;
     }
-    //we turn off the bit in snapshot func
-    //    my_handler->status=SNAPSHOT_ACTIVE&(~my_handler->status);
-       return 0;
+    //to turn off the bit in snapshot func
+    // my_handler->status=SNAPSHOT_ACTIVE&(~my_handler->status);
+    return 0;
 }
 int GAS_API_start_streaming(streaming_t* stream,char * file_name){
     printf("GAZ_API_start_streaming\n");
@@ -77,7 +77,7 @@ char* GAS_API_get_video_statics(record_t* r){
 status GAS_API_get_status(handler * handle){
     printf("GAZ_API_get_status");
     return handle->status;
-
+    
 }
 void GAS_API_free_all(void* handle){
     handler* my_handler=(handler*)(handle);
@@ -109,7 +109,7 @@ void* GAS_API_init(){
     }
     handle->status=INIT;
     handle->snapshot_bit=false;
-
+    
     int j=0,i=0;
     char z=(char)255,x=0;
     while(j!=MAX_TEMP*3)
@@ -130,18 +130,18 @@ void* GAS_API_init(){
     handle->static_mat_rgb[10]=x;
     handle->static_mat_rgb[11]=z;
     handle->static_mat_rgb[81]=x;
-        handle->static_mat_rgb[82]=x;
-        handle->static_mat_rgb[83]=z;
+    handle->static_mat_rgb[82]=x;
+    handle->static_mat_rgb[83]=z;
     pool_node *pn=init_pool_queue();
     handle->my_pool_node=pn;
-
+    
     capture_t *cap_t=init_capture_t(&(handle->status),RECORD_ACTIVE,STOP_ACTIVE,SNAPSHOT_ACTIVE,&(handle->snapshot_bit),handle->my_pool_node);
     rgb_converter_t  *rgb_c_t=init_rgb_converter_t(&(handle->status),handle->static_mat_rgb,SNAPSHOT_ACTIVE,RECORD_ACTIVE);
     yuv_converter_t *yuv_c_t=init_yuv_converter_t(&(handle->status));
     encoder_t *p_encoder=init_encoder(SNAPSHOT_WIDTH,SNAPSHOT_HEIGHT,12);
     write_t *wr_t=(write_t*)malloc(sizeof(write_t));
     wr_t=NULL;
-
+    
     Queue *q1=createQueue(CAPACITY);
     Queue *q2=createQueue(CAPACITY);
     Queue *q3=createQueue(CAPACITY);
@@ -151,9 +151,9 @@ void* GAS_API_init(){
     stage * stage3=init_stage(yuv_converter,q3,q2,stage4,yuv_c_t);
     stage * stage2=init_stage(rgb_converter,q2,q1,stage3,rgb_c_t);
     stage * stage1=init_stage(capture,q1,NULL,stage2,cap_t);
-
+    
     handle->stages=stage1;
-
+    
     return (void*)handle;
 }
 
