@@ -6,6 +6,10 @@
 #include <stdint.h>
 #include <jpeglib.h>
 #include <setjmp.h>
+#include <string.h>
+#include <time.h>
+#include <errno.h>
+
 typedef struct snapshot_t{
     char* file_name;  //full path ?
     int width;

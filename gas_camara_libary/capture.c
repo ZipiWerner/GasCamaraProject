@@ -1,8 +1,6 @@
 #include "capture.h"
-#include "libary_handler.h"
-#include "queue.h"
-#include "stdbool.h"
-capture_t * init_capture_t(int * st,int record_bit,int stop_active_bit,int snapshot_bit,bool * snap_hand_bit )
+
+capture_t * init_capture_t(int * st,int record_bit,int stop_active_bit,int snapshot_bit,bool * snap_hand_bit,pool_node * pn )
 {
     capture_t *cap_t=(capture_t*)malloc(sizeof(capture_t));
     cap_t->status=st;
@@ -10,6 +8,7 @@ capture_t * init_capture_t(int * st,int record_bit,int stop_active_bit,int snaps
     cap_t->snapshot_active_bit=snapshot_bit;
     cap_t->stop_active_bit=stop_active_bit;
     cap_t->snapshot_handler_bit=snap_hand_bit;
+    cap_t->pn=pn;
     return cap_t;
 }
 void randMat(int** matrix_temp){
@@ -29,13 +28,14 @@ void randMat(int** matrix_temp){
 }
 Node  *capture(void * my_arg,Node * node)
 {
-    printf("capture\n");
+
     capture_t *cap_t=(capture_t*)my_arg;
     if((*(cap_t->status)&cap_t->record_active_bit)||(*(cap_t->snapshot_handler_bit)==true))
     {
-       //to off the bit becase we want to create only one matrix when the snapsot is on
+        printf("capture\n");
+        //to off the bit becase we want to create only one matrix when the snapsot is on
         if(*(cap_t->snapshot_handler_bit)==true)
-           *(cap_t->snapshot_handler_bit)=false;
+            *(cap_t->snapshot_handler_bit)=false;
         int **  matrix=(int**)malloc(sizeof(int *)*SNAPSHOT_HEIGHT);
         matrix=(int**)malloc(sizeof(int *)*SNAPSHOT_HEIGHT);
         for(int i=0;i<SNAPSHOT_HEIGHT;i++)  {
@@ -43,11 +43,15 @@ Node  *capture(void * my_arg,Node * node)
             matrix[i]=(int *)malloc(sizeof(int)*SNAPSHOT_WIDTH);
         }
         randMat(matrix);
-        node=createNode(matrix, sizeof(int));
+        node=createNode(cap_t->pn,matrix);
+        //we must it else the capture will take most of the time of the program
+        sleep(1);
 
     }
 
     else
-        node=createNode(NULL,0);
+    {
+        node->data=NULL;
+    }
     return node;
 }

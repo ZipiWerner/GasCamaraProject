@@ -3,7 +3,6 @@
 
 Node  * write_record(void * my_arg,Node * node)
 {
-
-   printf("write");
+    printf("write!!\n");
    return node;
 }

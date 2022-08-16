@@ -1,7 +1,10 @@
 #include "save_snapshot.h"
 
 
-size_t ppm_save(snapshot_t *img,char * data) {
+size_t bmp_save(snapshot_t *img,char * data) {
+
+    img->file_name=(char *)realloc(img->file_name,sizeof(char)*(strlen(img->file_name)+5));
+    strcat(img->file_name,"bmp");
     printf("save ppm\n %d",img->width);
     FILE *   fp=fopen(img->file_name,"wb+");
     size_t n = 0;
@@ -34,11 +37,11 @@ void saveFrame_jpg(uint8_t *pRGBBuffer, char * iFrame, int width, int height)
     jpeg_create_compress(&cinfo);
 
 
-    sprintf(szFilename, "testZipi%s.jpg", iFrame);//Picture name is video name + number
+    sprintf(szFilename, "test%s.jpg", iFrame);//Picture name is video name + number
     fp = fopen(szFilename, "wb");
 
     if(fp == NULL)
-            return;
+        return;
 
     jpeg_stdio_dest(&cinfo, fp);
 
@@ -55,7 +58,7 @@ void saveFrame_jpg(uint8_t *pRGBBuffer, char * iFrame, int width, int height)
 
     row_stride = cinfo.image_width * 3;//The number of bytes in each row, if it is not an index image, it needs to be multiplied by 3 here
 
-   //Compress each row
+    //Compress each row
     while (cinfo.next_scanline <cinfo.image_height) {
         row_pointer[0] = &(pRGBBuffer[cinfo.next_scanline * row_stride]);
         jpeg_write_scanlines(&cinfo, row_pointer, 1);
@@ -70,7 +73,12 @@ void save_snapshot(snapshot_t* snap,char* rgb_matrix){
     snapshot_t s;
     s.width=SNAPSHOT_WIDTH;
     s.height=SNAPSHOT_HEIGHT;
-    s.file_name="imagezipi_11_25.bmp";
-    ppm_save(&s,rgb_matrix);
+    time_t t=time(NULL);
+    struct tm tm=*localtime(&t);
+    int n=25;//sprintf(NULL,"%d-%02d-%02d %02d:%02d:%02d\0", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
+    char* name=(char*)malloc(n+5);
+    sprintf(name,"%d-%02d-%02d %02d:%02d:%02d.", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
+    s.file_name=name;
+    bmp_save(&s,rgb_matrix);
     jpeg_save(&s,rgb_matrix);
 }

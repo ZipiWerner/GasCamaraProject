@@ -15,7 +15,6 @@ LIBS += -L/usr/lib/x86_64-linux-gnu  -lavcodec -lavformat -lavutil -lavcodec -lj
 SOURCES += \
     capture.c \
     encode.c \
-    exemple.cpp \
     func_tool.c \
     gas_camara_libary.c \
     libary_handler.c \

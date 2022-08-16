@@ -15,6 +15,7 @@
 #include "write.h"
 #include "encode.h"
 #include <stage.h>
+#include "func_tool.h"
 #ifdef __cplusplus
 
 extern "C" {
@@ -31,8 +32,6 @@ typedef struct streaming_t{
     int ip;
     int port;
 }streaming_t;
-
-
 
 typedef struct gpio_t{
     int num;
@@ -62,6 +61,7 @@ typedef struct handler{
     FILE *  fp;
     status status;
     bool snapshot_bit;
+    pool_node *my_pool_node;
 }handler;
 typedef struct {
 
@@ -82,5 +82,6 @@ typedef struct {
 #ifdef __cplusplus
 }
 #endif
+#endif // GAS_CAMARA_LIBARY_H
 
 
