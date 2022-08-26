@@ -17,8 +17,6 @@ void convert_to_yuv(char rgb_matrix[],  YUV *yuv){
             }
         }
     }
-
-
 }
 void free_rgb_matrix(char * m){
     free(m);

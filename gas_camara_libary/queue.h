@@ -1,6 +1,7 @@
 #ifndef QUEUE_H
 #define QUEUE_H
-
+#include <stdio.h>
+#include <stdlib.h>
 #include  <semaphore.h>
 #define SIZE_POOL_NODE 20
 typedef struct node{

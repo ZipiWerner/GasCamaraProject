@@ -1,6 +1,5 @@
 #include "queue.h"
-#include <stdio.h>
-#include <stdlib.h>
+
 Node * createNode(pool_node * pn,void * data){
     if(pn->index_arr==SIZE_POOL_NODE)
         pn->index_arr=0;

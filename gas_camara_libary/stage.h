@@ -5,7 +5,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "queue.h"
-#include "rgb_converter.h"
+#include <unistd.h>
+#define SECOND 1000000
+#define NUM_FRANE_PER_SECOND 40
+#define WAIT SECOND/NUM_FRANE_PER_SECOND
 #include "libary_handler.h"
 typedef Node * (*task_func)(int * ,Node  *);
 typedef struct stage{

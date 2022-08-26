@@ -7,6 +7,7 @@ size_t bmp_save(snapshot_t *img,char * data) {
     strcat(img->file_name,"bmp");
     printf("save ppm\n %d",img->width);
     FILE *   fp=fopen(img->file_name,"wb+");
+
     size_t n = 0;
     n +=fprintf(fp, "P6\n# THIS IS A COMMENT\n%d %d\n%d\n",
                 img->width, img->height, 0xFF);
@@ -70,15 +71,15 @@ void saveFrame_jpg(uint8_t *pRGBBuffer, char * iFrame, int width, int height)
     fclose(fp);
 }
 void save_snapshot(snapshot_t* snap,char* rgb_matrix){
-    snapshot_t s;
-    s.width=SNAPSHOT_WIDTH;
-    s.height=SNAPSHOT_HEIGHT;
+
+    snap->width=SNAPSHOT_WIDTH;
+    snap->height=SNAPSHOT_HEIGHT;
     time_t t=time(NULL);
     struct tm tm=*localtime(&t);
     int n=25;//sprintf(NULL,"%d-%02d-%02d %02d:%02d:%02d\0", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
     char* name=(char*)malloc(n+5);
     sprintf(name,"%d-%02d-%02d %02d:%02d:%02d.", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
-    s.file_name=name;
-    bmp_save(&s,rgb_matrix);
-    jpeg_save(&s,rgb_matrix);
+    snap->file_name=name;
+    bmp_save(snap,rgb_matrix);
+    jpeg_save(snap,rgb_matrix);
 }

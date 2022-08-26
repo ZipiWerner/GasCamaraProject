@@ -26,6 +26,7 @@ void randMat(int** matrix_temp){
         matrix_temp[height_pos][width_pos]=new_temp;
     }
 }
+int sum11=0;
 Node  *capture(void * my_arg,Node * node)
 {
 
@@ -44,14 +45,17 @@ Node  *capture(void * my_arg,Node * node)
         }
         randMat(matrix);
         node=createNode(cap_t->pn,matrix);
+        printf("%d\n",((int**)node->data)[0][0]);
+       printf("sleep %d\n",cap_t->bit++);
         //we must it else the capture will take most of the time of the program
-        sleep(1);
-
+//  sleep(2);
     }
 
     else
     {
+        printf("nulllll capture");
         node->data=NULL;
     }
+  //  sleep(2);
     return node;
 }

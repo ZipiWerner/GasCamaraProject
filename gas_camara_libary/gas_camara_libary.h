@@ -1,9 +1,9 @@
 #ifndef GAS_CAMARA_LIBARY_H
 #define GAS_CAMARA_LIBARY_H
 #define STAGES_NUMBER 5
-#define CAPACITY 10
+#define CAPACITY 20
 #include "libary_handler.h"
-#include <rgb_converter.h>
+#include "rgb_converter.h"
 #include "capture.h"
 #include "queue.h"
 #include <pthread.h>
@@ -20,6 +20,7 @@
 
 extern "C" {
 #endif
+
 typedef enum status{
   NO_STATUS=0,
   INIT=1,
@@ -55,6 +56,7 @@ typedef struct ppm_image{
     size_t size;
     char * name;
 } ppm_image;
+
 typedef struct handler{
     char static_mat_rgb[MAX_TEMP*3];
     stage * stages;
@@ -62,6 +64,7 @@ typedef struct handler{
     status status;
     bool snapshot_bit;
     pool_node *my_pool_node;
+    snapshot_t * my_snapshot;
 }handler;
 typedef struct {
 
@@ -69,7 +72,7 @@ typedef struct {
     void (*free_all)(void* handle);
     status (*get_status)(handler * handle);
     int (*signal_handler_interrupt)(handler * handler);
-    int (*start_record)(void* handler);
+    int (*start_record)(void* handler,record_t * );
     int (*stop_record)(void* handler);
     int (*start_streaming)(streaming_t*,char * file_name);
     int (*stop_streamig)(streaming_t*);
